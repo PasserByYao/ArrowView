@@ -1,25 +1,30 @@
 package com.example.arrowview;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
+import android.support.annotation.ColorInt;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
+
+import java.lang.ref.WeakReference;
 
 import static com.example.arrowview.Utils.dp2px;
 
 
 public class TipWindow extends PopupWindow {
 
-    private static final String TAG = "TipWindow";
     private final ArrowView arrowView;
 
-    public TipWindow(Context context) {
-        super(context);
+    private WeakReference<Activity> act;
 
+    private static TipWindow ins;
+
+    public TipWindow(Activity context) {
+        super(context);
+        this.act = new WeakReference<>(context);
         arrowView = new ArrowView(context);
         arrowView.setColor(Color.RED,Color.GREEN);
 
@@ -31,24 +36,47 @@ public class TipWindow extends PopupWindow {
     }
 
     /**
+     * 获取实例对象
+     * @param act
+     * @return
+     */
+    public static TipWindow singleton(Activity act) {
+        if (ins == null) {
+            synchronized (TipWindow.class) {
+                if (ins == null) {
+                    ins = new TipWindow(act);
+                }
+            }
+        }
+        return ins;
+    }
+
+    /**
+     * 设置主题色
+     * @param textColor
+     * @param backgroundColor
+     * @return
+     */
+    public TipWindow theme(@ColorInt int textColor,@ColorInt int backgroundColor) {
+        arrowView.setColor(textColor,backgroundColor);
+        return this;
+    }
+    /**
      * 在指定的view上面弹窗
-     * @param s
-     * @param parent
+     * @param tip
      * @param anchor
      */
-    public void showAtLocation(String s,View parent,View anchor) {
-        arrowView.setText(s);
-
-        Context context = parent.getContext();
-
-        arrowView.setPadding(dp2px(context,10),dp2px(context,5)
-                ,dp2px(context,10),dp2px(context,15));
+    public void showAboveAnchor(String tip,View anchor) {
+        arrowView.setText(tip);
+        Activity a = act.get();
+        arrowView.setPadding(dp2px(a,10),dp2px(a,5)
+                ,dp2px(a,10),dp2px(a,15));
 
         resize();
 
         int[] point = calculateAnchor(anchor);
 
-        super.showAtLocation(parent, Gravity.NO_GRAVITY, point[0], point[1]);
+        super.showAtLocation(act.get().getWindow().getDecorView(), Gravity.NO_GRAVITY, point[0], point[1]);
     }
 
     /**
@@ -62,8 +90,14 @@ public class TipWindow extends PopupWindow {
         int anchorWidth = anchor.getWidth();
         int sx = anchorX + anchorWidth / 2;
         anchor.getLocationOnScreen(ints);
+
+        int marginX = 0;
+
+        if (ints[0] != anchorX) {
+            marginX = ints[0] - anchorX;
+        }
         ints[1] = ints[1] - arrowView.getMeasuredHeight();
-        ints[0] = sx - arrowView.getMeasuredWidth()/2 ;
+        ints[0] = sx - arrowView.getMeasuredWidth()/2 +marginX;
         arrowView.drawBackground(anchor);
         return ints;
     }
@@ -81,10 +115,17 @@ public class TipWindow extends PopupWindow {
         int measuredWidth = arrowView.getMeasuredWidth();
         int measuredHeight = arrowView.getMeasuredHeight();
 
-        Log.e(TAG, "TipWindow: w : "+measuredWidth+ "   h : "+measuredHeight);
-
         //重新设置pop window宽高
         setWidth(measuredWidth);
         setHeight(measuredHeight);
+    }
+
+    /**
+     * 销魂引用，防止内存泄漏
+     */
+    public void destory() {
+        if (act != null) {
+            act.clear();
+        }
     }
 }

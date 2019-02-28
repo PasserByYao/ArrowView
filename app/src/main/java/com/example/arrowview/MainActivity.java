@@ -1,6 +1,7 @@
 package com.example.arrowview;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +15,6 @@ import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TipWindow tipWindow;
     ImageView imageView;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -22,14 +22,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tipWindow = new TipWindow(this);
+
         imageView = findViewById(R.id.images);
 
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                int rawX = (int) event.getRawX();
-                int rawY = (int) event.getRawY();
+                int rawX = (int) event.getX();
+                int rawY = (int) event.getY();
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
                 layoutParams.leftMargin = rawX;
                 layoutParams.topMargin = rawY;
@@ -41,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        tipWindow.showAtLocation("wo ai ni 我爱你我爱你我爱你  我",getWindow().getDecorView(),imageView);
+        TipWindow.singleton(this)
+                .theme(Color.YELLOW,Color.GREEN)
+                .showAboveAnchor("wo ai ni 我爱你我爱你我爱你  我",imageView);
         return true;
     }
 }

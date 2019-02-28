@@ -93,6 +93,11 @@ public class ArrowView extends AppCompatTextView {
         invalidate();
     }
 
+    /**
+     * 设置文本颜色和背景颜色
+     * @param textColor
+     * @param backgroundColor
+     */
     public void setColor(@ColorInt int textColor,@ColorInt int backgroundColor) {
         this.textColor = textColor;
         setTextColor(textColor);
