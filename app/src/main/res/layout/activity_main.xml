@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_marginLeft="100dp"
+    android:layout_marginTop="100dp"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
+    <ImageView
+        android:id="@+id/images"
+        android:textSize="18sp"
+        android:background="@drawable/ic_launcher_background"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
 
     <!--<com.example.arrowview.ArrowView-->
         <!--android:text="爽歪歪"-->
@@ -26,4 +28,4 @@
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content" />-->
 
-</LinearLayout>
+</RelativeLayout>

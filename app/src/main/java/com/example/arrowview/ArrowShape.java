@@ -1,11 +1,13 @@
 package com.example.arrowview;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.shapes.RectShape;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 
 public class ArrowShape extends RectShape {
@@ -17,6 +19,12 @@ public class ArrowShape extends RectShape {
     private Path mPath; // this is what we actually draw
 
     private int mArrowRadius;
+
+    private int bgColor = Color.LTGRAY;
+
+    private int offsetX;
+
+    private int paddingBottom;
 
     /**
      * RoundRectShape constructor.
@@ -38,13 +46,15 @@ public class ArrowShape extends RectShape {
      *                   ignored.
      */
     public ArrowShape(@Nullable float[] outerRadii, @Nullable RectF inset,
-                          @Nullable float[] innerRadii,int arrowRadius) {
+                          @Nullable float[] innerRadii,int arrowRadius,int offsetX,int paddingBottom) {
         if (outerRadii != null && outerRadii.length < 8) {
             throw new ArrayIndexOutOfBoundsException("outer radii must have >= 8 values");
         }
         if (innerRadii != null && innerRadii.length < 8) {
             throw new ArrayIndexOutOfBoundsException("inner radii must have >= 8 values");
         }
+        this.offsetX = offsetX;
+        this.paddingBottom = paddingBottom;
         mOuterRadii = outerRadii;
         mInset = inset;
         mInnerRadii = innerRadii;
@@ -57,6 +67,7 @@ public class ArrowShape extends RectShape {
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
+        paint.setColor(bgColor);
         canvas.drawPath(mPath, paint);
     }
 
@@ -78,7 +89,7 @@ public class ArrowShape extends RectShape {
 
         final RectF rect = rect();
         outline.setRoundRect((int) Math.ceil(rect.left), (int) Math.ceil(rect.top),
-                (int) Math.floor(rect.right), (int) Math.floor(rect.bottom)-30, radius);
+                (int) Math.floor(rect.right), (int) Math.floor(rect.bottom)-paddingBottom, radius);
     }
 
     @Override
@@ -89,10 +100,10 @@ public class ArrowShape extends RectShape {
         mPath.reset();
 
         if (mOuterRadii != null) {
-            r.bottom -= 30;
+            r.bottom -= paddingBottom;
             mPath.addRoundRect(r, mOuterRadii, Path.Direction.CW);
         } else {
-            r.bottom -= 30;
+            r.bottom -= paddingBottom;
             mPath.addRect(r, Path.Direction.CW);
         }
         if (mInnerRect != null) {
@@ -107,9 +118,9 @@ public class ArrowShape extends RectShape {
             }
         }
 
-        mPath.moveTo(r.left + (r.right - r.left)/3,r.bottom);
-        mPath.lineTo(r.left + (r.right - r.left)/3+mArrowRadius/2,r.bottom+mArrowRadius);
-        mPath.lineTo(r.left + (r.right - r.left)/3+mArrowRadius,r.bottom);
+        mPath.moveTo(r.left + (r.right - r.left)/2 - mArrowRadius/2 - offsetX,r.bottom);
+        mPath.lineTo(r.left + (r.right - r.left)/2 - offsetX,r.bottom+mArrowRadius);
+        mPath.lineTo(r.left + (r.right - r.left)/2 + mArrowRadius/2 - offsetX,r.bottom);
     }
 
     @Override
@@ -121,5 +132,9 @@ public class ArrowShape extends RectShape {
         shape.mInnerRect = new RectF(mInnerRect);
         shape.mPath = new Path(mPath);
         return shape;
+    }
+
+    public void setBackgroundColor(@ColorInt int color) {
+        this.bgColor = color;
     }
 }
