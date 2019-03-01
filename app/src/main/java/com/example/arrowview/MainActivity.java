@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onTouchEvent(MotionEvent event) {
         TipWindow.singleton(this)
                 .theme(Color.YELLOW,Color.GREEN)
+                .alpha(0.1f)
+                .cornerRadius(100)
                 .showAboveAnchor("wo ai ni 我爱你我爱你我爱你  我",imageView);
         return true;
     }

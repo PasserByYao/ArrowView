@@ -57,8 +57,28 @@ public class TipWindow extends PopupWindow {
      * @param backgroundColor
      * @return
      */
-    public TipWindow theme(@ColorInt int textColor,@ColorInt int backgroundColor) {
+    public TipWindow theme(@ColorInt int textColor, @ColorInt int backgroundColor) {
         arrowView.setColor(textColor,backgroundColor);
+        return this;
+    }
+
+    /**
+     * 设置背景透明度
+     * @param alpha
+     * @return
+     */
+    public TipWindow alpha(float alpha) {
+        arrowView.setBackgroundAlpha(alpha);
+        return this;
+    }
+
+    /**
+     * 设置圆角弧度
+     * @param radiusDpValue
+     * @return
+     */
+    public TipWindow cornerRadius(int radiusDpValue) {
+        arrowView.setCornerRadius(radiusDpValue);
         return this;
     }
     /**
