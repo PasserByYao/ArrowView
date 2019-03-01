@@ -10,13 +10,17 @@ import android.graphics.drawable.shapes.RectShape;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 
+/**
+ * @author Administrator
+ */
 public class ArrowShape extends RectShape {
     private float[] mOuterRadii;
     private RectF mInset;
     private float[] mInnerRadii;
 
     private RectF mInnerRect;
-    private Path mPath; // this is what we actually draw
+
+    private Path mPath;
 
     private int mArrowRadius;
 
